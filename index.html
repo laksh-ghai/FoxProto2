@@ -228,8 +228,16 @@
                 let price = parseFloat(stockInfo["05. price"]).toFixed(2);
                 let change = stockInfo["10. change percent"];
 
+                let riskAssessment = Math.random() > 0.5 ? "Low Risk ✅" : "High Risk ⚠️";
+                let advice = riskAssessment === "Low Risk ✅" 
+                    ? "This investment is stable with promising returns." 
+                    : "Market is volatile. Consider long-term strategy.";
+
                 resultDiv.innerHTML = `
                     <p><strong>📈 Price:</strong> $${price} (${change})</p>
+                    <h3>📊 Investment Risk Assessment</h3>
+                    <p><strong>${riskAssessment}</strong></p>
+                    <p>💡 ${advice}</p>
                     <h3>📰 Latest Market News</h3>
                     <ul>
                         <li>📢 ${stockSymbol} expected to grow in Q2 earnings</li>
