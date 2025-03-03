@@ -16,7 +16,7 @@
 
         /* Light & Dark Theme */
         :root {
-            --primary-color: #007bff;
+            --primary-color: #008000; /* Fidelity Green */
             --secondary-color: #00b894;
             --bg-light: #f4f4f4;
             --bg-dark: #1e1e1e;
@@ -132,7 +132,7 @@
         }
 
         button:hover {
-            background: #0056b3;
+            background: #006400;
             transform: translateY(-2px);
         }
 
@@ -246,16 +246,20 @@
             const NEWS_API_KEY = "YOUR_NEWS_API_KEY";
             const newsUrl = `https://newsapi.org/v2/everything?q=${company}&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`;
 
-            let newsResponse = await fetch(newsUrl);
-            let newsData = await newsResponse.json();
+            try {
+                let newsResponse = await fetch(newsUrl);
+                let newsData = await newsResponse.json();
+                let newsHeadlines = newsData.articles.slice(0, 3)
+                    .map(article => `<li>📰 ${article.title}</li>`).join('');
 
-            let newsHeadlines = newsData.articles.slice(0, 3).map(article => `<li>📰 ${article.title}</li>`).join('');
-
-            resultDiv.innerHTML = `
-                <p><strong>📊 Investment Type:</strong> ${investment}</p>
-                <h3>🔍 Why is the market volatile?</h3>
-                <ul>${newsHeadlines}</ul>
-            `;
+                resultDiv.innerHTML = `
+                    <p><strong>📊 Investment Type:</strong> ${investment}</p>
+                    <h3>🔍 Why is the market volatile?</h3>
+                    <ul>${newsHeadlines}</ul>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Failed to fetch news. Check API key.`;
+            }
         }
 
         function toggleTheme() {
