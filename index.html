@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fidelity AI - Stock Insights</title>
+    <title>Fidelity AI - Smart Investments</title>
     <style>
         /* Global Reset */
         * {
@@ -104,12 +104,13 @@
         /* Input & Button */
         .input-container {
             display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 10px;
-            justify-content: center;
         }
 
         select {
-            flex: 1;
+            width: 100%;
             padding: 12px;
             border: 2px solid var(--primary-color);
             border-radius: 6px;
@@ -186,21 +187,28 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="card">
-            <h1>AI Market Insights</h1>
-            <p>Select a stock to get detailed insights.</p>
+            <h1>AI Investment Insights</h1>
+            <p>Select a company and investment type for detailed insights.</p>
 
             <div class="input-container">
-                <select id="stockOptions">
-                    <option value="AAPL">Apple (AAPL)</option>
-                    <option value="TSLA">Tesla (TSLA)</option>
-                    <option value="GOOGL">Google (GOOGL)</option>
-                    <option value="MSFT">Microsoft (MSFT)</option>
-                    <option value="AMZN">Amazon (AMZN)</option>
-                    <option value="META">Meta (META)</option>
-                    <option value="NFLX">Netflix (NFLX)</option>
-                    <option value="NVDA">NVIDIA (NVDA)</option>
+                <!-- First Dropdown: Company -->
+                <select id="companyOptions" onchange="updateInvestmentOptions()">
+                    <option value="">Select a Company</option>
+                    <option value="AAPL">Apple</option>
+                    <option value="TSLA">Tesla</option>
+                    <option value="GOOGL">Google</option>
+                    <option value="MSFT">Microsoft</option>
+                    <option value="AMZN">Amazon</option>
+                    <option value="META">Meta</option>
+                    <option value="NFLX">Netflix</option>
+                    <option value="NVDA">NVIDIA</option>
                 </select>
-                <button onclick="fetchStockData()">Search</button>
+
+                <!-- Second Dropdown: Investment Type (Appears Dynamically) -->
+                <select id="investmentOptions" style="display: none;">
+                </select>
+
+                <button onclick="fetchInvestmentData()">Search</button>
             </div>
 
             <div id="result"></div>
@@ -208,47 +216,51 @@
     </div>
 
     <script>
-        async function fetchStockData() {
-            let stockSymbol = document.getElementById("stockOptions").value;
+        const investmentTypes = {
+            "GOOGL": ["Google Stocks", "Google Gemini AI", "Google Cloud"],
+            "AAPL": ["Apple Stocks", "Apple Vision Pro", "iPhone Business"],
+            "TSLA": ["Tesla Stocks", "Tesla Energy", "Tesla EVs"],
+            "MSFT": ["Microsoft Stocks", "Azure Cloud", "Microsoft AI"],
+            "AMZN": ["Amazon Stocks", "AWS Cloud", "Amazon Retail"],
+            "META": ["Meta Stocks", "Meta AI", "Meta VR"],
+            "NFLX": ["Netflix Stocks", "Netflix Originals", "Netflix Gaming"],
+            "NVDA": ["NVIDIA Stocks", "NVIDIA AI Chips", "NVIDIA Gaming GPUs"]
+        };
+
+        function updateInvestmentOptions() {
+            let company = document.getElementById("companyOptions").value;
+            let investmentDropdown = document.getElementById("investmentOptions");
+
+            if (company && investmentTypes[company]) {
+                investmentDropdown.innerHTML = investmentTypes[company]
+                    .map(item => `<option value="${item}">${item}</option>`)
+                    .join('');
+                investmentDropdown.style.display = "block";
+            } else {
+                investmentDropdown.style.display = "none";
+            }
+        }
+
+        function fetchInvestmentData() {
+            let company = document.getElementById("companyOptions").value;
+            let investment = document.getElementById("investmentOptions").value;
             let resultDiv = document.getElementById("result");
 
-            resultDiv.innerHTML = `🔍 Fetching market data for: <strong>${stockSymbol}</strong>...`;
-
-            const API_KEY = "YOUR_ALPHA_VANTAGE_API_KEY";  // Replace with your API Key
-            const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stockSymbol}&apikey=${API_KEY}`;
-
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("API request failed");
-
-                const data = await response.json();
-                if (!data["Global Quote"]) throw new Error("Invalid data from API");
-
-                let stockInfo = data["Global Quote"];
-                let price = parseFloat(stockInfo["05. price"]).toFixed(2);
-                let change = stockInfo["10. change percent"];
-
-                let riskAssessment = Math.random() > 0.5 ? "Low Risk ✅" : "High Risk ⚠️";
-                let advice = riskAssessment === "Low Risk ✅" 
-                    ? "This investment is stable with promising returns." 
-                    : "Market is volatile. Consider long-term strategy.";
-
-                resultDiv.innerHTML = `
-                    <p><strong>📈 Price:</strong> $${price} (${change})</p>
-                    <h3>📊 Investment Risk Assessment</h3>
-                    <p><strong>${riskAssessment}</strong></p>
-                    <p>💡 ${advice}</p>
-                    <h3>📰 Latest Market News</h3>
-                    <ul>
-                        <li>📢 ${stockSymbol} expected to grow in Q2 earnings</li>
-                        <li>📉 Market volatility impacts ${stockSymbol} investors</li>
-                        <li>📊 Analysts predict strong performance for ${stockSymbol}</li>
-                    </ul>
-                `;
-            } catch (error) {
-                console.error("Stock API Error:", error);
-                resultDiv.innerHTML = `❌ Error fetching stock data. Try again.`;
+            if (!company || !investment) {
+                resultDiv.innerHTML = "❌ Please select both company & investment type.";
+                return;
             }
+
+            let riskLevel = Math.random() > 0.5 ? "Low Risk ✅" : "High Risk ⚠️";
+            let advice = riskLevel === "Low Risk ✅"
+                ? "This investment is stable with promising returns."
+                : "Market is volatile. Consider long-term strategy.";
+
+            resultDiv.innerHTML = `
+                <p><strong>📊 Investment Type:</strong> ${investment}</p>
+                <p><strong>🔍 Risk Level:</strong> ${riskLevel}</p>
+                <p>💡 ${advice}</p>
+            `;
         }
 
         function toggleTheme() {
