@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FOX AI - Stock Analyzer</title>
+</head>
+<body>
+
+    <h2>FOX AI - Stock Analyzer</h2>
+    <input type="text" id="stockTicker" placeholder="Enter Stock Ticker">
+    <button onclick="getStockData();foxAI.fetchLiveMarketNews()">Get Stock Info</button>
+
+    <div id="result"></div>
+
+    <h2>📢 Latest Market News</h2>
+    <div id="news"></div>
+
+    <h2>💰 Investment Risk Assessment</h2>
+    <input type="text" id="investmentChoice" placeholder="Enter Investment Type">
+    <button onclick="getInvestmentAdvice()">Get Investment Advice</button>
+
+    <div id="advice"></div>
+
+   <script src="script.js?newversion"></script>
+   <script src="scriptoriginal.js"></script>
+</body>
+</html>
