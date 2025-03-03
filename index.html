@@ -108,7 +108,7 @@
             justify-content: center;
         }
 
-        input {
+        select, input {
             flex: 1;
             padding: 12px;
             border: 2px solid var(--primary-color);
@@ -118,7 +118,7 @@
             transition: 0.3s;
         }
 
-        input:focus {
+        select:focus, input:focus {
             border-color: var(--secondary-color);
             box-shadow: 0 0 8px rgba(0, 184, 148, 0.4);
         }
@@ -160,7 +160,7 @@
             background: var(--card-dark);
         }
 
-        .dark-mode input {
+        .dark-mode select, .dark-mode input {
             border-color: #bbb;
             background: #333;
             color: white;
@@ -193,10 +193,19 @@
     <div class="main-content">
         <div class="card">
             <h1>AI Market Insights</h1>
-            <p>Enter your query to get AI-powered market insights.</p>
+            <p>Select a stock from the dropdown to get real-time insights.</p>
 
             <div class="input-container">
-                <input type="text" placeholder="Enter your query..." id="query">
+                <select id="stockOptions">
+                    <option value="AAPL">Apple (AAPL)</option>
+                    <option value="TSLA">Tesla (TSLA)</option>
+                    <option value="GOOGL">Google (GOOGL)</option>
+                    <option value="MSFT">Microsoft (MSFT)</option>
+                    <option value="AMZN">Amazon (AMZN)</option>
+                    <option value="META">Meta (META)</option>
+                    <option value="NFLX">Netflix (NFLX)</option>
+                    <option value="NVDA">NVIDIA (NVDA)</option>
+                </select>
                 <button onclick="processQuery()">Search</button>
             </div>
 
@@ -206,18 +215,17 @@
 
     <script>
         function processQuery() {
-            let query = document.getElementById("query").value;
+            let stockSymbol = document.getElementById("stockOptions").value;
             let resultDiv = document.getElementById("result");
 
-            if (query.trim() === "") {
-                resultDiv.innerHTML = "⚠️ Please enter a query.";
-                resultDiv.style.color = "red";
-                return;
-            }
-
-            resultDiv.innerHTML = `🔍 Searching for: <strong>${query}</strong>`;
+            resultDiv.innerHTML = `🔍 Fetching market data for: <strong>${stockSymbol}</strong>`;
             resultDiv.style.color = "var(--primary-color)";
             resultDiv.style.opacity = "1";
+
+            // Simulated API request (Replace this with an actual API call)
+            setTimeout(() => {
+                resultDiv.innerHTML = `📈 Latest price for <strong>${stockSymbol}</strong>: $${(Math.random() * 1000).toFixed(2)}`;
+            }, 1000);
         }
 
         function toggleTheme() {
