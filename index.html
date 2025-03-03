@@ -214,31 +214,32 @@
 
             resultDiv.innerHTML = `🔍 Fetching market data for: <strong>${stockSymbol}</strong>...`;
 
-            try {
-                // Simulated API response (Replace with actual API request)
-                const stockData = await fetch(`https://api.example.com/stock/${stockSymbol}`); // Replace with real API
-                const data = await stockData.json();
+            const API_KEY = "YOUR_ALPHA_VANTAGE_API_KEY";  // Replace with your API Key
+            const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${stockSymbol}&apikey=${API_KEY}`;
 
-                let price = (Math.random() * 1000).toFixed(2); // Simulated price
-                let change = ((Math.random() * 10) - 5).toFixed(2);
-                let news = [
-                    "📢 Tesla's new AI innovation boosts stock confidence - Bloomberg",
-                    "📉 Market sees volatility ahead of Fed announcement - CNBC",
-                    "📊 Analysts predict strong quarter for Tesla despite challenges - WSJ"
-                ];
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("API request failed");
+
+                const data = await response.json();
+                if (!data["Global Quote"]) throw new Error("Invalid data from API");
+
+                let stockInfo = data["Global Quote"];
+                let price = parseFloat(stockInfo["05. price"]).toFixed(2);
+                let change = stockInfo["10. change percent"];
 
                 resultDiv.innerHTML = `
-                    <p><strong>📈 Price:</strong> $${price} (${change}%)</p>
-                    <p><strong>📅 50-Day Moving Avg:</strong> $${(price * 0.9).toFixed(2)}</p>
-                    <p><strong>📊 50-Day High:</strong> $${(price * 1.1).toFixed(2)}</p>
-                    <p><strong>📉 50-Day Low:</strong> $${(price * 0.8).toFixed(2)}</p>
+                    <p><strong>📈 Price:</strong> $${price} (${change})</p>
                     <h3>📰 Latest Market News</h3>
                     <ul>
-                        ${news.map(n => `<li>${n}</li>`).join('')}
+                        <li>📢 ${stockSymbol} expected to grow in Q2 earnings</li>
+                        <li>📉 Market volatility impacts ${stockSymbol} investors</li>
+                        <li>📊 Analysts predict strong performance for ${stockSymbol}</li>
                     </ul>
                 `;
             } catch (error) {
-                resultDiv.innerHTML = `<p>❌ Error fetching stock data. Try again.</p>`;
+                console.error("Stock API Error:", error);
+                resultDiv.innerHTML = `❌ Error fetching stock data. Try again.`;
             }
         }
 
