@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidelity AI Demo</title>
+    <style>
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Full-Screen Centering */
+        body {
+            background: linear-gradient(to right, #007bff, #00b894);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        /* Card Container */
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        /* Title */
+        h1 {
+            font-size: 26px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Subtitle */
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* Input + Button Container */
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Input Field */
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #007bff;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #00b894;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 184, 148, 0.4);
+        }
+
+        /* Button */
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Result Text */
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Fidelity AI Assistant</h1>
+        <p>Enter your query below to get AI-powered insights.</p>
+
+        <div class="input-container">
+            <input type="text" placeholder="Enter your query..." id="query">
+            <button onclick="processQuery()">Search</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function processQuery() {
+            let query = document.getElementById("query").value;
+            let resultDiv = document.getElementById("result");
+
+            if (query.trim() === "") {
+                resultDiv.innerHTML = "⚠️ Please enter a query.";
+                resultDiv.style.color = "red";
+                return;
+            }
+
+            resultDiv.innerHTML = `🔍 Searching for: <strong>${query}</strong>`;
+            resultDiv.style.color = "#007bff";
+            resultDiv.style.opacity = "1";
+        }
+    </script>
+
+</body>
+</html>
