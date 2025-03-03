@@ -3,26 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FOX AI - Stock Analyzer</title>
+    <title>Fidelity AI Demo</title>
+    <style>
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Light & Dark Theme */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #00b894;
+            --bg-light: #f4f4f4;
+            --bg-dark: #1e1e1e;
+            --text-light: #333;
+            --text-dark: #fff;
+            --card-light: #fff;
+            --card-dark: #2a2a2a;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+        }
+
+        .sidebar h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar button {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .sidebar button:hover {
+            background: #ddd;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .card {
+            background: var(--card-light);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
+        /* Input & Button */
+        .input-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--primary-color);
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 8px rgba(0, 184, 148, 0.4);
+        }
+
+        button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Results */
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        /* Dark Mode */
+        .dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .dark-mode .card {
+            background: var(--card-dark);
+        }
+
+        .dark-mode input {
+            border-color: #bbb;
+            background: #333;
+            color: white;
+        }
+
+        .dark-mode button {
+            background: var(--secondary-color);
+        }
+
+        .dark-mode button:hover {
+            background: #00916e;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
 
-    <h2>FOX AI - Stock Analyzer</h2>
-    <input type="text" id="stockTicker" placeholder="Enter Stock Ticker">
-    <button onclick="getStockData();foxAI.fetchLiveMarketNews()">Get Stock Info</button>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Fidelity AI Demo</h2>
+        <button onclick="toggleTheme()">Toggle Dark Mode</button>
+    </div>
 
-    <div id="result"></div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="card">
+            <h1>AI Market Insights</h1>
+            <p>Enter your query to get AI-powered market insights.</p>
 
-    <h2>📢 Latest Market News</h2>
-    <div id="news"></div>
+            <div class="input-container">
+                <input type="text" placeholder="Enter your query..." id="query">
+                <button onclick="processQuery()">Search</button>
+            </div>
 
-    <h2>💰 Investment Risk Assessment</h2>
-    <input type="text" id="investmentChoice" placeholder="Enter Investment Type">
-    <button onclick="getInvestmentAdvice()">Get Investment Advice</button>
+            <div id="result"></div>
+        </div>
+    </div>
 
-    <div id="advice"></div>
+    <script>
+        function processQuery() {
+            let query = document.getElementById("query").value;
+            let resultDiv = document.getElementById("result");
 
-   <script src="script.js?newversion"></script>
-   <script src="scriptoriginal.js"></script>
+            if (query.trim() === "") {
+                resultDiv.innerHTML = "⚠️ Please enter a query.";
+                resultDiv.style.color = "red";
+                return;
+            }
+
+            resultDiv.innerHTML = `🔍 Searching for: <strong>${query}</strong>`;
+            resultDiv.style.color = "var(--primary-color)";
+            resultDiv.style.opacity = "1";
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle("dark-mode");
+        }
+    </script>
+
 </body>
 </html>
