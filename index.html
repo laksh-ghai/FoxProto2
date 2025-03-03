@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fidelity AI Demo</title>
+    <title>Fidelity AI - Stock Insights</title>
     <style>
         /* Global Reset */
         * {
@@ -83,7 +83,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
             text-align: center;
             animation: fadeIn 0.8s ease-in-out;
@@ -108,7 +108,7 @@
             justify-content: center;
         }
 
-        select, input {
+        select {
             flex: 1;
             padding: 12px;
             border: 2px solid var(--primary-color);
@@ -116,11 +116,6 @@
             font-size: 16px;
             outline: none;
             transition: 0.3s;
-        }
-
-        select:focus, input:focus {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 8px rgba(0, 184, 148, 0.4);
         }
 
         button {
@@ -146,8 +141,7 @@
             font-size: 18px;
             font-weight: bold;
             color: var(--primary-color);
-            opacity: 0;
-            animation: fadeIn 1s ease-in-out forwards;
+            text-align: left;
         }
 
         /* Dark Mode */
@@ -160,7 +154,7 @@
             background: var(--card-dark);
         }
 
-        .dark-mode select, .dark-mode input {
+        .dark-mode select {
             border-color: #bbb;
             background: #333;
             color: white;
@@ -185,7 +179,7 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <h2>Fidelity AI Demo</h2>
+        <h2>Fidelity AI</h2>
         <button onclick="toggleTheme()">Toggle Dark Mode</button>
     </div>
 
@@ -193,7 +187,7 @@
     <div class="main-content">
         <div class="card">
             <h1>AI Market Insights</h1>
-            <p>Select a stock from the dropdown to get real-time insights.</p>
+            <p>Select a stock to get detailed insights.</p>
 
             <div class="input-container">
                 <select id="stockOptions">
@@ -206,7 +200,7 @@
                     <option value="NFLX">Netflix (NFLX)</option>
                     <option value="NVDA">NVIDIA (NVDA)</option>
                 </select>
-                <button onclick="processQuery()">Search</button>
+                <button onclick="fetchStockData()">Search</button>
             </div>
 
             <div id="result"></div>
@@ -214,18 +208,38 @@
     </div>
 
     <script>
-        function processQuery() {
+        async function fetchStockData() {
             let stockSymbol = document.getElementById("stockOptions").value;
             let resultDiv = document.getElementById("result");
 
-            resultDiv.innerHTML = `🔍 Fetching market data for: <strong>${stockSymbol}</strong>`;
-            resultDiv.style.color = "var(--primary-color)";
-            resultDiv.style.opacity = "1";
+            resultDiv.innerHTML = `🔍 Fetching market data for: <strong>${stockSymbol}</strong>...`;
 
-            // Simulated API request (Replace this with an actual API call)
-            setTimeout(() => {
-                resultDiv.innerHTML = `📈 Latest price for <strong>${stockSymbol}</strong>: $${(Math.random() * 1000).toFixed(2)}`;
-            }, 1000);
+            try {
+                // Simulated API response (Replace with actual API request)
+                const stockData = await fetch(`https://api.example.com/stock/${stockSymbol}`); // Replace with real API
+                const data = await stockData.json();
+
+                let price = (Math.random() * 1000).toFixed(2); // Simulated price
+                let change = ((Math.random() * 10) - 5).toFixed(2);
+                let news = [
+                    "📢 Tesla's new AI innovation boosts stock confidence - Bloomberg",
+                    "📉 Market sees volatility ahead of Fed announcement - CNBC",
+                    "📊 Analysts predict strong quarter for Tesla despite challenges - WSJ"
+                ];
+
+                resultDiv.innerHTML = `
+                    <p><strong>📈 Price:</strong> $${price} (${change}%)</p>
+                    <p><strong>📅 50-Day Moving Avg:</strong> $${(price * 0.9).toFixed(2)}</p>
+                    <p><strong>📊 50-Day High:</strong> $${(price * 1.1).toFixed(2)}</p>
+                    <p><strong>📉 50-Day Low:</strong> $${(price * 0.8).toFixed(2)}</p>
+                    <h3>📰 Latest Market News</h3>
+                    <ul>
+                        ${news.map(n => `<li>${n}</li>`).join('')}
+                    </ul>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p>❌ Error fetching stock data. Try again.</p>`;
+            }
         }
 
         function toggleTheme() {
