@@ -191,7 +191,6 @@
             <p>Select a company and investment type for detailed insights.</p>
 
             <div class="input-container">
-                <!-- First Dropdown: Company -->
                 <select id="companyOptions" onchange="updateInvestmentOptions()">
                     <option value="">Select a Company</option>
                     <option value="AAPL">Apple</option>
@@ -204,9 +203,7 @@
                     <option value="NVDA">NVIDIA</option>
                 </select>
 
-                <!-- Second Dropdown: Investment Type (Appears Dynamically) -->
-                <select id="investmentOptions" style="display: none;">
-                </select>
+                <select id="investmentOptions" style="display: none;"></select>
 
                 <button onclick="fetchInvestmentData()">Search</button>
             </div>
@@ -241,25 +238,23 @@
             }
         }
 
-        function fetchInvestmentData() {
+        async function fetchInvestmentData() {
             let company = document.getElementById("companyOptions").value;
             let investment = document.getElementById("investmentOptions").value;
             let resultDiv = document.getElementById("result");
 
-            if (!company || !investment) {
-                resultDiv.innerHTML = "❌ Please select both company & investment type.";
-                return;
-            }
+            const NEWS_API_KEY = "YOUR_NEWS_API_KEY";
+            const newsUrl = `https://newsapi.org/v2/everything?q=${company}&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`;
 
-            let riskLevel = Math.random() > 0.5 ? "Low Risk ✅" : "High Risk ⚠️";
-            let advice = riskLevel === "Low Risk ✅"
-                ? "This investment is stable with promising returns."
-                : "Market is volatile. Consider long-term strategy.";
+            let newsResponse = await fetch(newsUrl);
+            let newsData = await newsResponse.json();
+
+            let newsHeadlines = newsData.articles.slice(0, 3).map(article => `<li>📰 ${article.title}</li>`).join('');
 
             resultDiv.innerHTML = `
                 <p><strong>📊 Investment Type:</strong> ${investment}</p>
-                <p><strong>🔍 Risk Level:</strong> ${riskLevel}</p>
-                <p>💡 ${advice}</p>
+                <h3>🔍 Why is the market volatile?</h3>
+                <ul>${newsHeadlines}</ul>
             `;
         }
 
