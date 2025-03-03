@@ -1,4 +1,5 @@
-async function getStockPrice() {
+async function getStockData() {
+
     let ticker = document.getElementById("stockTicker").value.toUpperCase().trim();
     
     if (!ticker) {
@@ -6,29 +7,53 @@ async function getStockPrice() {
         return;
     }
 
-    const apiKey = "YOUR_RAPIDAPI_KEY"; // Replace with your actual API key
-    const url = `https://yh-finance.p.rapidapi.com/market/v2/get-quotes?symbols=${ticker}&region=US`;
+    const apiKey1 = "8a5a6d83aemshc1932fb3028c609p117effjsn769029e7fd22"; // Replace with your actual API key
+
+    // Fetch stock price
+    const priceUrl = `https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/v2/get-quotes?symbols=${ticker}&region=US`;
+    const statsUrl = `https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v4/get-statistics?symbols=${ticker}&region=US`;
 
     const options = {
         method: "GET",
         headers: {
-            "X-RapidAPI-Key": apiKey,
-            "X-RapidAPI-Host": "yh-finance.p.rapidapi.com"
+            "X-RapidAPI-Key": apiKey1,
+            "X-RapidAPI-Host": "apidojo-yahoo-finance-v1.p.rapidapi.com"
         }
     };
 
     try {
-        const response = await fetch(url, options);
-        const data = await response.json();
+        // Fetch stock price
 
-        if (data.quoteResponse && data.quoteResponse.result.length > 0) {
-            let price = data.quoteResponse.result[0].regularMarketPrice;
-            document.getElementById("result").innerText = `📈 ${ticker}: $${price}`;
+        const priceResponse = await fetch(priceUrl, options);
+        const priceData = await priceResponse.json();
+
+        if (priceData.quoteResponse && priceData.quoteResponse.result.length > 0) {
+            let stock = priceData.quoteResponse.result[0];
+            let price = stock.regularMarketPrice;
+            let change = stock.regularMarketChangePercent.toFixed(2);
+            
+            let fiftyLow = stock.fiftyTwoWeekLow.toFixed(2);
+            let fiftyHigh = stock.fiftyTwoWeekHigh.toFixed(2);
+            let fiftyAvg = stock.fiftyDayAverage.toFixed(2);
+            
+            document.getElementById("result").innerHTML = 
+                ` 
+                <b>Stock:</b> ${ticker} <br>
+                💲 <b>Price:</b> $${price} (${change}%) <br>
+                <b>50-Day Moving Avg:</b> $${fiftyAvg} <br>
+                <b>50-Day High </b> $${fiftyHigh} <br>
+                <b>50-Day Low </b> $${fiftyLow} <br>             
+                `;           
+
+                
         } else {
-            document.getElementById("result").innerText = "❌ Invalid stock ticker.";
+            document.getElementById("result").innerHTML = "❌ Invalid stock ticker.";
+            return;
         }
+
     } catch (error) {
-        console.error("Error fetching stock price:", error);
-        document.getElementById("result").innerText = "❌ Could not fetch stock price.";
+        console.error("Error fetching stock data:", error);
+        document.getElementById("result").innerHTML = "❌ Could not fetch stock data.";
+        document.getElementById("stats").innerHTML = "";
     }
 }
