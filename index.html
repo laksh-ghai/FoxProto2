@@ -16,7 +16,7 @@
 
         /* Light & Dark Theme */
         :root {
-            --primary-color: #008000; /* Fidelity Green */
+            --primary-color: #007bff;
             --secondary-color: #00b894;
             --bg-light: #f4f4f4;
             --bg-dark: #1e1e1e;
@@ -95,6 +95,12 @@
             font-weight: bold;
         }
 
+        p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
         /* Input & Button */
         .input-container {
             display: flex;
@@ -126,7 +132,7 @@
         }
 
         button:hover {
-            background: #006400;
+            background: #0056b3;
             transform: translateY(-2px);
         }
 
@@ -185,6 +191,7 @@
             <p>Select a company and investment type for detailed insights.</p>
 
             <div class="input-container">
+                <!-- First Dropdown: Company -->
                 <select id="companyOptions" onchange="updateInvestmentOptions()">
                     <option value="">Select a Company</option>
                     <option value="AAPL">Apple</option>
@@ -197,7 +204,9 @@
                     <option value="NVDA">NVIDIA</option>
                 </select>
 
-                <select id="investmentOptions" style="display: none;"></select>
+                <!-- Second Dropdown: Investment Type (Appears Dynamically) -->
+                <select id="investmentOptions" style="display: none;">
+                </select>
 
                 <button onclick="fetchInvestmentData()">Search</button>
             </div>
@@ -232,32 +241,26 @@
             }
         }
 
-        async function fetchInvestmentData() {
+        function fetchInvestmentData() {
             let company = document.getElementById("companyOptions").value;
             let investment = document.getElementById("investmentOptions").value;
             let resultDiv = document.getElementById("result");
 
-            const NEWS_API_KEY = "YOUR_NEWS_API_KEY"; 
-            const newsUrl = `https://newsapi.org/v2/everything?q=${company}&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`;
-
-            try {
-                let newsResponse = await fetch(newsUrl);
-                let newsData = await newsResponse.json();
-
-                if (!newsData.articles) throw new Error("No news found");
-
-                let newsHeadlines = newsData.articles.slice(0, 3)
-                    .map(article => `<li>📰 ${article.title}</li>`).join('');
-
-                resultDiv.innerHTML = `
-                    <p><strong>📊 Investment Type:</strong> ${investment}</p>
-                    <h3>🔍 Why is the market volatile?</h3>
-                    <ul>${newsHeadlines}</ul>
-                `;
-            } catch (error) {
-                console.error("Error fetching news:", error);
-                resultDiv.innerHTML = `❌ Failed to fetch news. Try again later.`;
+            if (!company || !investment) {
+                resultDiv.innerHTML = "❌ Please select both company & investment type.";
+                return;
             }
+
+            let riskLevel = Math.random() > 0.5 ? "Low Risk ✅" : "High Risk ⚠️";
+            let advice = riskLevel === "Low Risk ✅"
+                ? "This investment is stable with promising returns."
+                : "Market is volatile. Consider long-term strategy.";
+
+            resultDiv.innerHTML = `
+                <p><strong>📊 Investment Type:</strong> ${investment}</p>
+                <p><strong>🔍 Risk Level:</strong> ${riskLevel}</p>
+                <p>💡 ${advice}</p>
+            `;
         }
 
         function toggleTheme() {
