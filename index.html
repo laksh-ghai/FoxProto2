@@ -95,47 +95,6 @@
             font-weight: bold;
         }
 
-        p {
-            font-size: 16px;
-            margin-bottom: 20px;
-            color: var(--text-light);
-        }
-
-        /* Input & Button */
-        .input-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--primary-color);
-            border-radius: 6px;
-            font-size: 16px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background: #006400;
-            transform: translateY(-2px);
-        }
-
         /* Results */
         #result {
             margin-top: 20px;
@@ -143,36 +102,6 @@
             font-weight: bold;
             color: var(--primary-color);
             text-align: left;
-        }
-
-        /* Dark Mode */
-        .dark-mode {
-            background: var(--bg-dark);
-            color: var(--text-dark);
-        }
-
-        .dark-mode .card {
-            background: var(--card-dark);
-        }
-
-        .dark-mode select {
-            border-color: #bbb;
-            background: #333;
-            color: white;
-        }
-
-        .dark-mode button {
-            background: var(--secondary-color);
-        }
-
-        .dark-mode button:hover {
-            background: #00916e;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -190,20 +119,18 @@
             <h1>AI Investment Insights</h1>
             <p>Select a company and investment type for detailed insights.</p>
 
-            <div class="input-container">
-                <select id="companyOptions" onchange="updateInvestmentOptions()">
-                    <option value="">Select a Company</option>
-                    <option value="AAPL">Apple</option>
-                    <option value="TSLA">Tesla</option>
-                    <option value="GOOGL">Google</option>
-                    <option value="MSFT">Microsoft</option>
-                    <option value="AMZN">Amazon</option>
-                    <option value="META">Meta</option>
-                    <option value="NFLX">Netflix</option>
-                    <option value="NVDA">NVIDIA</option>
+            <div>
+                <select id="companyOptions">
+                    <option value="Google">Google</option>
+                    <option value="Apple">Apple</option>
+                    <option value="Tesla">Tesla</option>
+                    <option value="Microsoft">Microsoft</option>
                 </select>
 
-                <select id="investmentOptions" style="display: none;"></select>
+                <select id="investmentOptions">
+                    <option value="Google Stocks">Google Stocks</option>
+                    <option value="Google Gemini AI">Google Gemini AI</option>
+                </select>
 
                 <button onclick="fetchInvestmentData()">Search</button>
             </div>
@@ -213,44 +140,21 @@
     </div>
 
     <script>
-        const investmentTypes = {
-            "GOOGL": ["Google Stocks", "Google Gemini AI", "Google Cloud"],
-            "AAPL": ["Apple Stocks", "Apple Vision Pro", "iPhone Business"],
-            "TSLA": ["Tesla Stocks", "Tesla Energy", "Tesla EVs"],
-            "MSFT": ["Microsoft Stocks", "Azure Cloud", "Microsoft AI"],
-            "AMZN": ["Amazon Stocks", "AWS Cloud", "Amazon Retail"],
-            "META": ["Meta Stocks", "Meta AI", "Meta VR"],
-            "NFLX": ["Netflix Stocks", "Netflix Originals", "Netflix Gaming"],
-            "NVDA": ["NVIDIA Stocks", "NVIDIA AI Chips", "NVIDIA Gaming GPUs"]
-        };
-
-        function updateInvestmentOptions() {
-            let company = document.getElementById("companyOptions").value;
-            let investmentDropdown = document.getElementById("investmentOptions");
-
-            if (company && investmentTypes[company]) {
-                investmentDropdown.innerHTML = investmentTypes[company]
-                    .map(item => `<option value="${item}">${item}</option>`)
-                    .join('');
-                investmentDropdown.style.display = "block";
-            } else {
-                investmentDropdown.style.display = "none";
-            }
-        }
-
         async function fetchInvestmentData() {
             let company = document.getElementById("companyOptions").value;
             let investment = document.getElementById("investmentOptions").value;
             let resultDiv = document.getElementById("result");
 
-            const NEWS_API_KEY = "YOUR_NEWS_API_KEY";
-            const newsUrl = `https://newsapi.org/v2/everything?q=${company}&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`;
+            resultDiv.innerHTML = `🔍 Fetching market data for: <strong>${company}</strong>...`;
 
             try {
-                let newsResponse = await fetch(newsUrl);
-                let newsData = await newsResponse.json();
-                let newsHeadlines = newsData.articles.slice(0, 3)
-                    .map(article => `<li>📰 ${article.title}</li>`).join('');
+                // Fetch news from backend
+                let response = await fetch(`http://localhost:3000/get-news?company=${company}`);
+                let newsData = await response.json();
+
+                if (!newsData || newsData.length === 0) throw new Error("No news found");
+
+                let newsHeadlines = newsData.map(article => `<li>📰 ${article.title}</li>`).join('');
 
                 resultDiv.innerHTML = `
                     <p><strong>📊 Investment Type:</strong> ${investment}</p>
@@ -258,7 +162,8 @@
                     <ul>${newsHeadlines}</ul>
                 `;
             } catch (error) {
-                resultDiv.innerHTML = `❌ Failed to fetch news. Check API key.`;
+                console.error("Error fetching news:", error);
+                resultDiv.innerHTML = `❌ Failed to fetch news. Check backend server.`;
             }
         }
 
