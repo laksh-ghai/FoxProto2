@@ -3,26 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FOX AI - Stock Analyzer</title>
+    <title>Fidelity AI - Smart Investments</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h2>FOX AI - Stock Analyzer</h2>
-    <input type="text" id="stockTicker" placeholder="Enter Stock Ticker">
-    <button onclick="getStockData();foxAI.fetchLiveMarketNews()">Get Stock Info</button>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>🚀 Fidelity AI</h2>
+        <button onclick="toggleTheme()">🌙 Toggle Dark Mode</button>
+    </div>
 
-    <div id="result"></div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="card">
+            <h1>📊 AI Investment Insights</h1>
+            <p>Select a company and investment type for detailed insights.</p>
 
-    <h2>📢 Latest Market News</h2>
-    <div id="news"></div>
+            <div class="input-container">
+                <select id="companyOptions" onchange="updateInvestmentOptions()">
+                    <option value="">🌍 Select a Company</option>
+                    <option value="Tesla">Tesla</option>
+                    <option value="Google">Google</option>
+                    <option value="Microsoft">Microsoft</option>
+                    <option value="Amazon">Amazon</option>
+                </select>
 
-    <h2>💰 Investment Risk Assessment</h2>
-    <input type="text" id="investmentChoice" placeholder="Enter Investment Type">
-    <button onclick="getInvestmentAdvice()">Get Investment Advice</button>
+                <select id="investmentOptions" style="display: none;"></select>
 
-    <div id="advice"></div>
+                <button onclick="fetchInvestmentData()">🔎 Search</button>
+            </div>
 
-   <script src="script.js?newversion"></script>
-   <script src="scriptoriginal.js"></script>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const investmentTypes = {
+            "Tesla": ["Tesla Stocks", "Tesla Energy", "Tesla EVs"],
+            "Google": ["Google Stocks", "Google Gemini AI", "Google Cloud"],
+            "Microsoft": ["Microsoft Stocks", "Azure Cloud", "Microsoft AI"],
+            "Amazon": ["Amazon Stocks", "AWS Cloud", "Amazon Retail"]
+        };
+
+        function updateInvestmentOptions() {
+            let company = document.getElementById("companyOptions").value;
+            let investmentDropdown = document.getElementById("investmentOptions");
+
+            if (company && investmentTypes[company]) {
+                investmentDropdown.innerHTML = investmentTypes[company]
+                    .map(item => `<option value="${item}">${item}</option>`)
+                    .join('');
+                investmentDropdown.style.display = "block";
+            } else {
+                investmentDropdown.style.display = "none";
+            }
+        }
+
+        async function fetchInvestmentData_old() {
+            let company = document.getElementById("companyOptions").value;
+            let investment = document.getElementById("investmentOptions").value;
+            let resultDiv = document.getElementById("result");
+
+            
+            const NEWS_API_KEY = "YOUR_NEWS_API_KEY"; 
+            const formattedQuery = encodeURIComponent(`${company} stock news`);
+            const newsUrl = `https://newsapi.org/v2/everything?q=${formattedQuery}&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`;
+
+            try {
+                let newsResponse = await fetch(newsUrl);
+                let newsData = await newsResponse.json();
+
+                if (!newsData.articles || newsData.articles.length === 0) {
+                    throw new Error("No relevant news found.");
+                }
+
+                let newsHeadlines = newsData.articles.slice(0, 3)
+                    .map(article => `<li>📰 ${article.title}</li>`).join('');
+
+                resultDiv.innerHTML = `
+                    <p><strong>📊 Investment Type:</strong> ${investment}</p>
+                    <h3>🔍 Why is the market volatile?</h3>
+                    <ul>${newsHeadlines}</ul>
+                `;
+            } catch (error) {
+                console.error("Error fetching news:", error);
+                resultDiv.innerHTML = `❌ No news available. Try again later.`;
+            }
+        }
+
+
+        async function fetchInvestmentData() {
+    let company = document.getElementById("companyOptions").value;
+    let investment = document.getElementById("investmentOptions").value;
+    let resultDiv = document.getElementById("result");
+
+    try {
+        // Fetch news from your local server
+        let newsResponse = await fetch(`http://localhost:3000/get-news?company=${encodeURIComponent(company)}`);
+        let newsData = await newsResponse.json();
+
+        if (!newsData.articles || newsData.articles.length === 0) {
+            throw new Error("No relevant news found.");
+        }
+
+        let newsHeadlines = newsData.articles.slice(0, 3)
+            .map(article => `<li>📰 ${article.title}</li>`).join('');
+
+        resultDiv.innerHTML = `
+            <p><strong>📊 Investment Type:</strong> ${investment}</p>
+            <h3>🔍 Why is the market volatile?</h3>
+            <ul>${newsHeadlines}</ul>
+        `;
+    } catch (error) {
+        console.error("Error fetching news:", error);
+        resultDiv.innerHTML = `❌ No news available. Try again later.`;
+    }
+}
+
+
+
+        
+
+        function toggleTheme() {
+            document.body.classList.toggle("dark-mode");
+        }
+    </script>
+
 </body>
 </html>
