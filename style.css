@@ -1,146 +1,165 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fidelity AI Demo</title>
-    <style>
-        /* Global Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease-in-out;
+}
 
-        /* Full-Screen Centering */
-        body {
-            background: linear-gradient(to right, #007bff, #00b894);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 20px;
-        }
+/* Light & Dark Theme */
+:root {
+    --primary-color: #008000; /* Fidelity Green */
+    --secondary-color: #00b894;
+    --bg-light: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    --bg-dark: linear-gradient(135deg, #1e1e1e, #343a40);
+    --text-light: #333;
+    --text-dark: #fff;
+    --card-light: #ffffffcc;
+    --card-dark: #2a2a2a;
+}
 
-        /* Card Container */
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            max-width: 450px;
-            width: 100%;
-            animation: fadeIn 0.8s ease-in-out;
-        }
+body {
+    display: flex;
+    height: 100vh;
+    background: var(--bg-light);
+    color: var(--text-light);
+}
 
-        /* Title */
-        h1 {
-            font-size: 26px;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    box-shadow: 3px 0px 10px rgba(0, 0, 0, 0.2);
+}
 
-        /* Subtitle */
-        p {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 20px;
-        }
+.sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
 
-        /* Input + Button Container */
-        .input-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
+.sidebar button {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 12px 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+}
 
-        /* Input Field */
-        input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #007bff;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: 0.3s;
-        }
+.sidebar button:hover {
+    background: #ddd;
+    transform: scale(1.05);
+}
 
-        input:focus {
-            border-color: #00b894;
-            outline: none;
-            box-shadow: 0 0 8px rgba(0, 184, 148, 0.4);
-        }
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+}
 
-        /* Button */
-        button {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
-        }
+.card {
+    background: var(--card-light);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    max-width: 650px;
+    width: 100%;
+    text-align: center;
+    animation: fadeIn 0.8s ease-in-out;
+}
 
-        button:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
-        }
+h1 {
+    font-size: 28px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
 
-        /* Result Text */
-        #result {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #007bff;
-            opacity: 0;
-            animation: fadeIn 1s ease-in-out forwards;
-        }
+/* Input & Button */
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    font-size: 18px;
+    background: white;
+    cursor: pointer;
+}
 
-    </style>
-</head>
-<body>
+button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
 
-    <div class="container">
-        <h1>Fidelity AI Assistant</h1>
-        <p>Enter your query below to get AI-powered insights.</p>
+button:hover {
+    background: #006400;
+    transform: scale(1.05);
+}
 
-        <div class="input-container">
-            <input type="text" placeholder="Enter your query..." id="query">
-            <button onclick="processQuery()">Search</button>
-        </div>
+/* Results */
+#result {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-align: left;
+}
 
-        <div id="result"></div>
-    </div>
+/* Dark Mode */
+.dark-mode {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
 
-    <script>
-        function processQuery() {
-            let query = document.getElementById("query").value;
-            let resultDiv = document.getElementById("result");
+.dark-mode .card {
+    background: var(--card-dark);
+}
 
-            if (query.trim() === "") {
-                resultDiv.innerHTML = "⚠️ Please enter a query.";
-                resultDiv.style.color = "red";
-                return;
-            }
+.dark-mode select {
+    border-color: #bbb;
+    background: #333;
+    color: white;
+}
 
-            resultDiv.innerHTML = `🔍 Searching for: <strong>${query}</strong>`;
-            resultDiv.style.color = "#007bff";
-            resultDiv.style.opacity = "1";
-        }
-    </script>
+.dark-mode button {
+    background: var(--secondary-color);
+}
 
-</body>
-</html>
+.dark-mode button:hover {
+    background: #00916e;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
