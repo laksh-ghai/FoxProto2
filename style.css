@@ -6,6 +6,33 @@
     font-family: 'Poppins', sans-serif;
     transition: all 0.3s ease-in-out;
 }
+/* Improve Readability for List Items */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+ul li {
+    font-size: 18px; /* Larger Text */
+    font-weight: 600; /* Bolder Font */
+    line-height: 1.6; /* Better Line Spacing */
+    color: #222; /* Darker Text for Better Contrast */
+    background: #f8f9fa; /* Light Background for Contrast */
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+ul li::before {
+    content: "📰"; /* News Icon */
+    margin-right: 10px;
+    font-size: 20px;
+    color: #007bff; /* Fidelity Blue for Icons */
+}
+
 
 /* Light & Dark Theme */
 :root {
